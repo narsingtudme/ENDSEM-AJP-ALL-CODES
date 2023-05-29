@@ -1,0 +1,99 @@
+DEVELOP AN RMI APPLICATION WHICH ACCEPTS A STRING OR A NUMBER AND CHECKS THAT STRING  OR  NUMBER  IS PALINDROME OR NOT.
+QUESTION:
+1. WHAT IS THE DIFFERENCE BETWEEN USING BIND() AND REBIND() METHODS OF NAMING CLASS ?
+
+PROGRAM:
+
+//1st code:Palinterface.java(create interface not class)
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Palinterface extends Remote {
+	public int palin(String a) throws RemoteException;
+
+}
+
+
+//2nd code: Palindrome.java(class file)
+
+import java.rmi.server.UnicastRemoteObject;
+
+import java.rmi.*;
+import java.lang.*;
+import java.rmi.server.*;
+public class Palindrome extends UnicastRemoteObject implements Palinterface
+{
+    public Palindrome() throws RemoteException { }
+    public int palin(String a) throws RemoteException
+    {
+        System.out.println("Hello");
+        StringBuffer str = new StringBuffer(a);
+        String str1 = str.toString();
+        System.out.println("Print : " + str1.toString());
+        StringBuffer str2 = str.reverse();
+        System.out.println("Print : " + str2.toString());
+        int b = str1.compareTo(str2.toString());
+        System.out.println("Print : " + b);
+        if (b == 0)
+            return 1;
+        else
+            return 0;
+    }
+}
+
+
+// 3rd code: RMI_SERA.java(class file)
+import java.io.*;
+import java.rmi.*;
+import java.net.*;
+public class RMI_SERA
+{
+    public static void main(String args[]) throws Exception
+    {
+        try
+        {
+            Palindrome twox = new Palindrome();
+            Naming.bind("palin", twox);
+            System.out.println("Object registered");
+        }
+        catch(Exception e)
+        {
+            System.out.println("Exception" + e);
+        }
+    }
+}
+
+
+//4th  code: Palclient.java(class file)
+
+import java.io.*;
+import java.rmi.*;
+import java.net.*;
+public class Palclient
+{
+    public static void main(String args[]) throws Exception
+    {
+        try
+        {
+            String s1 = "rmi://localhost/palin";
+            Palinterface onex = (Palinterface)Naming.lookup(s1);
+            int m = onex.palin("madam");
+            System.out.println("Print : " + m);
+            if (m == 1)
+            {
+                System.out.println("The given string is a Palindrome");
+            }
+            else
+            {
+                System.out.println("The given string is not a Palindrome");
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Exception" + e);
+        }
+    }
+}
+
+
+
